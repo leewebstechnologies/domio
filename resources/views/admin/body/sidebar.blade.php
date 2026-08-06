@@ -26,15 +26,33 @@
                 <i class="link-arrow" data-feather="chevron-down"></i>
                 </a>
                 <div class="collapse" id="emails">
-                <ul class="nav sub-menu">
-                    <li class="nav-item">
-                    <a href="{{ route('all.types') }}" class="nav-link">All Types</a>
-                    </li>
-                    <li class="nav-item">
-                    <a href="pages/email/read.html" class="nav-link">Add Type</a>
-                    </li>
+                    <ul class="nav sub-menu">
+                        <li class="nav-item">
+                            <a href="{{ route('all.types') }}" class="nav-link">All Types</a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ route('add.type') }}" class="nav-link">Add Type</a>
+                        </li>
+                    </ul>
+                </div>
+            </li>
 
-                </ul>
+            <li class="nav-item">
+                <a class="nav-link" data-bs-toggle="collapse" href="#amenities" role="button" aria-expanded="false" aria-controls="emails">
+                <i class="link-icon" data-feather="mail"></i>
+                <span class="link-title">Amenities</span>
+                <i class="link-arrow" data-feather="chevron-down"></i>
+                </a>
+                <div class="collapse" id="amenities">
+                    <ul class="nav sub-menu">
+                        <li class="nav-item">
+                            <a href="{{ route('all.amenities') }}" class="nav-link">All Amenities</a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ route('add.amenity') }}" class="nav-link">Add Amenity</a>
+                        </li>
+
+                    </ul>
                 </div>
             </li>
             <li class="nav-item">

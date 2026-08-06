@@ -3,6 +3,7 @@
 // use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\Backend\PropertyTypeController;
+use App\Http\Controllers\Backend\AmenitiesController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -47,6 +48,21 @@ Route::middleware(['auth', 'roles:admin'])->group(function() {
     //Property Type All Routes
     Route::controller(PropertyTypeController::class)->group(function() {
         Route::get('/all/types', 'AllTypes')->name('all.types');
+        Route::get('/add/type', 'AddType')->name('add.type');
+        Route::post('/store/type', 'StoreType')->name('store.type');
+        Route::get('/edit/type/{id}', 'EditType')->name('edit.type');
+        Route::post('/update/type', 'UpdateType')->name('update.type');
+        Route::get('/delete/type/{id}', 'DeleteType')->name('delete.type');
+    });
+
+    //Amenities All Routes
+    Route::controller(AmenitiesController::class)->group(function() {
+        Route::get('/all/amenities', 'AllAmenities')->name('all.amenities');
+        Route::get('/add/amenity', 'AddAmenity')->name('add.amenity');
+        Route::post('/store/amenity', 'StoreAmenity')->name('store.amenity');
+        Route::get('/edit/amenity/{id}', 'EditAmenity')->name('edit.amenity');
+        Route::post('/update/amenity', 'UpdateAmenity')->name('update.amenity');
+        Route::get('/delete/amenity/{id}', 'DeleteAmenity')->name('delete.amenity');
     });
  });
 
