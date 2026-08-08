@@ -3,6 +3,7 @@
 // use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\Backend\PropertyTypeController;
+use App\Http\Controllers\Backend\PropertyController;
 use App\Http\Controllers\Backend\AmenitiesController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
@@ -64,6 +65,18 @@ Route::middleware(['auth', 'roles:admin'])->group(function() {
         Route::post('/update/amenity', 'UpdateAmenity')->name('update.amenity');
         Route::get('/delete/amenity/{id}', 'DeleteAmenity')->name('delete.amenity');
     });
+
+    //Property All Routes
+    Route::controller(PropertyController::class)->group(function() {
+        Route::get('/all/properties', 'AllProperties')->name('all.properties');
+        Route::get('/add/property', 'AddProperty')->name('add.property');
+        // Route::post('/store/amenity', 'StoreAmenity')->name('store.amenity');
+        // Route::get('/edit/amenity/{id}', 'EditAmenity')->name('edit.amenity');
+        // Route::post('/update/amenity', 'UpdateAmenity')->name('update.amenity');
+        // Route::get('/delete/amenity/{id}', 'DeleteAmenity')->name('delete.amenity');
+    });
+
+    
  });
 
 
