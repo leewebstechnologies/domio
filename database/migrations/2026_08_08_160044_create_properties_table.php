@@ -21,7 +21,7 @@ return new class extends Migration
             $table->string('property_status');
             $table->string('lowest_price')->nullable();
             $table->string('max_price')->nullable();
-            $table->string('property_thumbnail');
+            $table->string('main_thumbnail');
             $table->text('short_desc')->nullable();
             $table->text('long_desc')->nullable();
             $table->string('bedroom')->nullable();

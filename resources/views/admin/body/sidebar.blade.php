@@ -68,7 +68,7 @@
                             <a href="{{ route('all.properties') }}" class="nav-link">All Properties</a>
                         </li>
                         <li class="nav-item">
-                            <a href="pages/ui-components/alerts.html" class="nav-link">Add Property</a>
+                            <a href="{{ route('add.property') }}" class="nav-link">Add Property</a>
                         </li>
 
                     </ul>
