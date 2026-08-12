@@ -47,14 +47,16 @@
                                 <div class="col-sm-6">
                                     <div class="mb-3">
                                         <label class="form-label">Main Thumnail</label>
-                                        <input type="file" name="main_thumbnail" class="form-control">
+                                        <input type="file" name="main_thumbnail" class="form-control" onChange="mainThumbnailUrl(this)">
+                                        <img src="" id="mainThumbnail" alt="">
                                     </div>
                                 </div>
 
                                 <div class="col-sm-6">
                                     <div class="mb-3">
                                         <label class="form-label">Multiple Images</label>
-                                        <input type="file" name="multiple_images" class="form-control" multiple>
+                                        <input type="file" name="multiple_images[]" id="multipleImages" class="form-control" multiple="">
+                                        <div class="row" id="preview_img"></div>
                                     </div>
                                 </div>
                             </div>
@@ -113,28 +115,22 @@
                             </div>
 
                             <div class="row">
-                                <div class="col-sm-3">
+                                <div class="col-sm-4">
                                     <div class="mb-3">
                                         <label class="form-label">Property Size</label>
                                         <input type="text" class="form-control" name="property_size">
                                     </div>
                                 </div><!-- Col -->
-                                <div class="col-sm-3">
+                                <div class="col-sm-4">
                                     <div class="mb-3">
                                         <label class="form-label">Property Video</label>
                                         <input type="text" class="form-control" name="property_video">
                                     </div>
                                 </div>
-                                <div class="col-sm-3">
+                                <div class="col-sm-4">
                                     <div class="mb-3">
                                         <label class="form-label">Neighbourhood</label>
                                         <input type="text" class="form-control" name="neighbourhood">
-                                    </div>
-                                </div>
-                                <div class="col-sm-3">
-                                    <div class="mb-3">
-                                        <label class="form-label">Postal Code</label>
-                                        <input type="text" class="form-control" name="postal_code">
                                     </div>
                                 </div>
                             </div>
@@ -157,19 +153,19 @@
                             </div><!-- Row -->
 
                             <div class="row">
-                                <div class="col-sm-3">
+                                <div class="col-sm-4">
                                     <div class="mb-3">
                                         <label class="form-label">Property Type</label>
                                         <input type="text" class="form-control" name="property_type">
                                     </div>
                                 </div><!-- Col -->
-                                <div class="col-sm-3">
+                                <div class="col-sm-4">
                                     <div class="mb-3">
                                         <label class="form-label">Property Amenities</label>
                                         <input type="text" class="form-control" name="property_amenities">
                                     </div>
                                 </div>
-                                <div class="col-sm-3">
+                                <div class="col-sm-4">
                                     <div class="mb-3">
                                         <label class="form-label">Agent</label>
                                         <input type="text" class="form-control" name="agent">
