@@ -37,7 +37,7 @@ return new class extends Migration
             $table->string('neighbourhood')->nullable();
             $table->string('longtitude')->nullable();
             $table->string('latitude')->nullable();
-            $table->string('feature')->nullable();
+            $table->string('featured')->nullable();
             $table->string('hot')->nullable();
             $table->integer('agent_id')->nullable();
             $table->string('status')->default(0)->nullable();
