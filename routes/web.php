@@ -71,8 +71,7 @@ Route::middleware(['auth', 'roles:admin'])->group(function() {
         Route::get('/all/properties', 'AllProperties')->name('all.properties');
         Route::get('/add/property', 'AddProperty')->name('add.property');
         Route::post('/store/property', 'StoreProperty')->name('store.property');
-        // Route::post('/store/amenity', 'StoreAmenity')->name('store.amenity');
-        // Route::get('/edit/amenity/{id}', 'EditAmenity')->name('edit.amenity');
+        Route::get('/edit/property/{id}', 'EditProperty')->name('edit.property');
         // Route::post('/update/amenity', 'UpdateAmenity')->name('update.amenity');
         // Route::get('/delete/amenity/{id}', 'DeleteAmenity')->name('delete.amenity');
     });
