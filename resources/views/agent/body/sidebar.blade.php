@@ -1,7 +1,7 @@
 <nav class="sidebar">
     <div class="sidebar-header">
         <a href="/" class="sidebar-brand">
-        Domio<span>Admin</span>
+        Domio<span>Agent</span>
         </a>
         <div class="sidebar-toggler not-active">
         <span></span>
@@ -13,48 +13,12 @@
         <ul class="nav">
             <li class="nav-item nav-category">Main</li>
             <li class="nav-item">
-                <a href="{{ route('admin.dashboard') }}" class="nav-link">
+                <a href="{{ route('agent.dashboard') }}" class="nav-link">
                 <i class="link-icon" data-feather="box"></i>
                 <span class="link-title">Dashboard</span>
                 </a>
             </li>
             <li class="nav-item nav-category">Real Estate</li>
-            <li class="nav-item">
-                <a class="nav-link" data-bs-toggle="collapse" href="#emails" role="button" aria-expanded="false" aria-controls="emails">
-                <i class="link-icon" data-feather="mail"></i>
-                <span class="link-title">Property Type</span>
-                <i class="link-arrow" data-feather="chevron-down"></i>
-                </a>
-                <div class="collapse" id="emails">
-                    <ul class="nav sub-menu">
-                        <li class="nav-item">
-                            <a href="{{ route('all.types') }}" class="nav-link">All Types</a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="{{ route('add.type') }}" class="nav-link">Add Type</a>
-                        </li>
-                    </ul>
-                </div>
-            </li>
-
-            <li class="nav-item">
-                <a class="nav-link" data-bs-toggle="collapse" href="#amenities" role="button" aria-expanded="false" aria-controls="emails">
-                <i class="link-icon" data-feather="mail"></i>
-                <span class="link-title">Amenities</span>
-                <i class="link-arrow" data-feather="chevron-down"></i>
-                </a>
-                <div class="collapse" id="amenities">
-                    <ul class="nav sub-menu">
-                        <li class="nav-item">
-                            <a href="{{ route('all.amenities') }}" class="nav-link">All Amenities</a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="{{ route('add.amenity') }}" class="nav-link">Add Amenity</a>
-                        </li>
-
-                    </ul>
-                </div>
-            </li>
 
              <li class="nav-item">
                 <a class="nav-link" data-bs-toggle="collapse" href="#property" role="button" aria-expanded="false" aria-controls="emails">

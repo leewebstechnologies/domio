@@ -176,7 +176,6 @@
                                     </div>
                                 </div>
 
-
                                 <div class="col-sm-3">
                                     <div class="mb-3">
 
@@ -190,7 +189,6 @@
                                 </div>
 
                             </div>
-
 
                             <!-- Property Size / Video / Neighbourhood -->
                             <div class="row">
@@ -246,7 +244,7 @@
                                             Longitude
                                         </label>
 
-                                        <input type="text" class="form-control" name="longtitude" value="{{ $property->longtitude }}">
+                                        <input type="text" class="form-control" name="longitude" value="{{ $property->longitude }}">
 
                                         <a href="https://www.latlong.net/convert-address-to-lat-long.html"
                                            target="_blank">
@@ -318,7 +316,6 @@
                                     </div>
 
                                 </div>
-
 
                                 <!-- Amenities -->
                                 <div class="col-sm-4">
@@ -465,9 +462,7 @@
                             <!-- Submit -->
                             <button type="submit"
                                     class="btn btn-primary">
-
                                 Save Changes
-
                             </button>
 
                         </form>
@@ -606,8 +601,9 @@
 								</div>
                         </form>
 
-                         <form method="POST" action="{{ route('update.property.multiimage') }}" id="myForm" enctype="multipart/form-data">
+                         <form method="POST" action="{{ route('store.new.multiimage') }}" id="myForm" enctype="multipart/form-data">
                             @csrf
+                            <input type="hidden" name="imageid" value="{{ $property->id }}">
                             <table class="table table-striped">
                                 <tbody>
                                     <tr>
@@ -630,6 +626,452 @@
 </div>
 
 {{-- End Property Multi Image Update --}}
+
+{{-- Property Facility Update --}}
+<div class="page-content" style="margin-top: -35px;">
+    <div class="row profile-body">
+
+        <div class="col-md-12 col-xl-12 middle-wrapper">
+            <div class="row">
+
+                <div class="card">
+                    <div class="card-body">
+
+                        <h6 class="card-title">Edit Property Facility</h6>
+
+                        <form
+                            method="POST"
+                            action="{{ route('update.property.facility') }}"
+                            id="facilityForm"
+                        >
+                            @csrf
+
+                            <input
+                                type="hidden"
+                                name="id"
+                                value="{{ $property->id }}"
+                            >
+
+                            {{-- Existing and new facilities will be placed here --}}
+                            <div id="facility-container">
+
+                                @forelse ($facilities as $item)
+
+                                    <div class="facility-row border rounded p-3 mb-3">
+
+                                        <div class="row align-items-end">
+
+                                            {{-- Facility --}}
+                                            <div class="form-group col-md-4 mb-3">
+
+                                                <label class="form-label">
+                                                    Facility
+                                                </label>
+
+                                                <select
+                                                    name="facility_name[]"
+                                                    class="form-select"
+                                                >
+                                                    <option value="">
+                                                        Select Facility
+                                                    </option>
+
+                                                    <option value="Hospital"
+                                                        {{ $item->facility_name === 'Hospital' ? 'selected' : '' }}>
+                                                        Hospital
+                                                    </option>
+
+                                                    <option value="SuperMarket"
+                                                        {{ $item->facility_name === 'SuperMarket' ? 'selected' : '' }}>
+                                                        Super Market
+                                                    </option>
+
+                                                    <option value="School"
+                                                        {{ $item->facility_name === 'School' ? 'selected' : '' }}>
+                                                        School
+                                                    </option>
+
+                                                    <option value="Entertainment"
+                                                        {{ $item->facility_name === 'Entertainment' ? 'selected' : '' }}>
+                                                        Entertainment
+                                                    </option>
+
+                                                    <option value="Pharmacy"
+                                                        {{ $item->facility_name === 'Pharmacy' ? 'selected' : '' }}>
+                                                        Pharmacy
+                                                    </option>
+
+                                                    <option value="Airport"
+                                                        {{ $item->facility_name === 'Airport' ? 'selected' : '' }}>
+                                                        Airport
+                                                    </option>
+
+                                                    <option value="Railways"
+                                                        {{ $item->facility_name === 'Railways' ? 'selected' : '' }}>
+                                                        Railways
+                                                    </option>
+
+                                                    <option value="Bus Stop"
+                                                        {{ $item->facility_name === 'Bus Stop' ? 'selected' : '' }}>
+                                                        Bus Stop
+                                                    </option>
+
+                                                    <option value="Beach"
+                                                        {{ $item->facility_name === 'Beach' ? 'selected' : '' }}>
+                                                        Beach
+                                                    </option>
+
+                                                    <option value="Mall"
+                                                        {{ $item->facility_name === 'Mall' ? 'selected' : '' }}>
+                                                        Mall
+                                                    </option>
+
+                                                    <option value="Bank"
+                                                        {{ $item->facility_name === 'Bank' ? 'selected' : '' }}>
+                                                        Bank
+                                                    </option>
+
+                                                </select>
+
+                                            </div>
+
+                                            {{-- Distance --}}
+                                            <div class="form-group col-md-4 mb-3">
+
+                                                <label class="form-label">
+                                                    Distance
+                                                </label>
+
+                                                <input
+                                                    type="text"
+                                                    name="distance[]"
+                                                    class="form-control"
+                                                    value="{{ $item->distance }}"
+                                                    placeholder="Distance (Km)"
+                                                >
+
+                                            </div>
+
+                                            {{-- Buttons --}}
+                                            <div class="form-group col-md-4 mb-3">
+
+                                                <button
+                                                    type="button"
+                                                    class="btn btn-success btn-sm add-facility"
+                                                >
+                                                    <i class="fa fa-plus-circle"></i>
+                                                    Add
+                                                </button>
+
+                                                <button
+                                                    type="button"
+                                                    class="btn btn-danger btn-sm remove-facility"
+                                                >
+                                                    <i class="fa fa-minus-circle"></i>
+                                                    Remove
+                                                </button>
+
+                                            </div>
+
+                                        </div>
+
+                                    </div>
+
+                                @empty
+
+                                    {{-- Show one empty row if the property has no facilities --}}
+                                    <div class="facility-row border rounded p-3 mb-3">
+
+                                        <div class="row align-items-end">
+
+                                            <div class="form-group col-md-4 mb-3">
+
+                                                <label class="form-label">
+                                                    Facility
+                                                </label>
+
+                                                <select
+                                                    name="facility_name[]"
+                                                    class="form-select"
+                                                >
+                                                    <option value="">
+                                                        Select Facility
+                                                    </option>
+
+                                                    <option value="Hospital">Hospital</option>
+                                                    <option value="SuperMarket">Super Market</option>
+                                                    <option value="School">School</option>
+                                                    <option value="Entertainment">Entertainment</option>
+                                                    <option value="Pharmacy">Pharmacy</option>
+                                                    <option value="Airport">Airport</option>
+                                                    <option value="Railways">Railways</option>
+                                                    <option value="Bus Stop">Bus Stop</option>
+                                                    <option value="Beach">Beach</option>
+                                                    <option value="Mall">Mall</option>
+                                                    <option value="Bank">Bank</option>
+                                                </select>
+
+                                            </div>
+
+                                            <div class="form-group col-md-4 mb-3">
+
+                                                <label class="form-label">
+                                                    Distance
+                                                </label>
+
+                                                <input
+                                                    type="text"
+                                                    name="distance[]"
+                                                    class="form-control"
+                                                    placeholder="Distance (Km)"
+                                                >
+
+                                            </div>
+
+                                            <div class="form-group col-md-4 mb-3">
+
+                                                <button
+                                                    type="button"
+                                                    class="btn btn-success btn-sm add-facility"
+                                                >
+                                                    <i class="fa fa-plus-circle"></i>
+                                                    Add
+                                                </button>
+
+                                                <button
+                                                    type="button"
+                                                    class="btn btn-danger btn-sm remove-facility"
+                                                >
+                                                    <i class="fa fa-minus-circle"></i>
+                                                    Remove
+                                                </button>
+
+                                            </div>
+
+                                        </div>
+
+                                    </div>
+
+                                @endforelse
+
+                            </div>
+
+                            <button
+                                type="submit"
+                                class="btn btn-primary"
+                            >
+                                Save Changes
+                            </button>
+
+                        </form>
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+</div>
+{{-- End Property Facility Update --}}
+
+
+<div style="display: none;">
+
+    <div class="whole_extra_item_add"
+         id="whole_extra_item_add">
+
+        <div class="whole_extra_item_delete">
+
+            <div class="container mt-2">
+
+                <div class="row">
+
+                    <div class="form-group col-md-4">
+
+                        <label for="facility_name">
+                            Facilities
+                        </label>
+
+                        <select name="facility_name[]"
+                                class="form-control">
+
+                            <option value="">
+                                Select Facility
+                            </option>
+
+                            <option value="Hospital">
+                                Hospital
+                            </option>
+
+                            <option value="SuperMarket">
+                                Super Market
+                            </option>
+
+                            <option value="School">
+                                School
+                            </option>
+
+                            <option value="Entertainment">
+                                Entertainment
+                            </option>
+
+                            <option value="Pharmacy">
+                                Pharmacy
+                            </option>
+
+                            <option value="Airport">
+                                Airport
+                            </option>
+
+                            <option value="Railways">
+                                Railways
+                            </option>
+
+                            <option value="Bus Stop">
+                                Bus Stop
+                            </option>
+
+                            <option value="Beach">
+                                Beach
+                            </option>
+
+                            <option value="Mall">
+                                Mall
+                            </option>
+
+                            <option value="Bank">
+                                Bank
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <div class="form-group col-md-4">
+
+                        <label for="distance">
+                            Distance
+                        </label>
+
+                        <input type="text"
+                               name="distance[]"
+                               class="form-control"
+                               placeholder="Distance (Km)">
+
+                    </div>
+
+
+                    <div class="form-group col-md-4"
+                         style="padding-top: 20px;">
+
+                        <span class="btn btn-success btn-sm addeventmore">
+
+                            <i class="fa fa-plus-circle"></i>
+                            Add
+
+                        </span>
+
+                        <span class="btn btn-danger btn-sm removeeventmore">
+
+                            <i class="fa fa-minus-circle"></i>
+                            Remove
+
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- ========================================================= -->
+<!-- Add More Facilities -->
+<!-- ========================================================= -->
+
+{{-- <script>
+
+    $(document).ready(function () {
+
+        $(document).on("click", ".addeventmore", function () {
+
+            var whole_extra_item_add =
+                $("#whole_extra_item_add").html();
+
+            $(this)
+                .closest(".add_item")
+                .append(whole_extra_item_add);
+
+        });
+
+
+        $(document).on("click", ".removeeventmore", function () {
+
+            $(this)
+                .closest(".whole_extra_item_delete")
+                .remove();
+
+        });
+
+    });
+
+</script> --}}
+<script>
+    $(document).ready(function () {
+
+        /**
+         * Add a new facility row.
+         */
+        $(document).on('click', '.add-facility', function () {
+
+            const facilityRow = $(this)
+                .closest('.facility-row')
+                .clone();
+
+            // Clear selected facility
+            facilityRow
+                .find('select[name="facility_name[]"]')
+                .val('');
+
+            // Clear distance
+            facilityRow
+                .find('input[name="distance[]"]')
+                .val('');
+
+            $('#facility-container').append(facilityRow);
+        });
+
+
+        /**
+         * Remove a facility row.
+         *
+         * Always keep at least one facility row.
+         */
+        $(document).on('click', '.remove-facility', function () {
+
+            const rows = $('#facility-container .facility-row');
+
+            if (rows.length > 1) {
+                $(this)
+                    .closest('.facility-row')
+                    .remove();
+            } else {
+                alert('At least one facility row must remain.');
+            }
+        });
+
+    });
+</script>
+
+
 
 
 

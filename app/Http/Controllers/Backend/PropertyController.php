@@ -14,6 +14,7 @@ use Haruncpi\LaravelIdGenerator\IdGenerator;
 use Illuminate\Http\Request;
 use Intervention\Image\Drivers\Gd\Driver;
 use Intervention\Image\ImageManager;
+use Illuminate\Support\Facades\DB;
 
 class PropertyController extends Controller
 {
@@ -45,13 +46,7 @@ class PropertyController extends Controller
     /**
      * Store a new property.
      */
-    public function StoreProperty(Request $request)
-    {
-        /*
-        |--------------------------------------------------------------------------
-        | Validation
-        |--------------------------------------------------------------------------
-        */
+    public function StoreProperty(Request $request) {
 
         $request->validate([
             'property_name' => 'required|string|max:255',
@@ -78,23 +73,9 @@ class PropertyController extends Controller
             ],
         ]);
 
-
-        /*
-        |--------------------------------------------------------------------------
-        | Amenities
-        |--------------------------------------------------------------------------
-        */
-
         $amenity = $request->input('amenity_id', []);
 
         $amenities = implode(',', $amenity);
-
-
-        /*
-        |--------------------------------------------------------------------------
-        | Generate Property Code
-        |--------------------------------------------------------------------------
-        */
 
         $pcode = IdGenerator::generate([
             'table' => 'properties',
@@ -102,13 +83,6 @@ class PropertyController extends Controller
             'length' => 5,
             'prefix' => 'PC',
         ]);
-
-
-        /*
-        |--------------------------------------------------------------------------
-        | Create Upload Directories
-        |--------------------------------------------------------------------------
-        */
 
         $thumbnailDirectory = public_path(
             'upload/property/thumbnail'
@@ -126,13 +100,6 @@ class PropertyController extends Controller
             mkdir($multiImageDirectory, 0755, true);
         }
 
-
-        /*
-        |--------------------------------------------------------------------------
-        | Main Thumbnail Upload
-        |--------------------------------------------------------------------------
-        */
-
         $image = $request->file('main_thumbnail');
 
         $manager = new ImageManager(
@@ -148,21 +115,7 @@ class PropertyController extends Controller
             $thumbnailDirectory . '/' . $name_gen
         );
 
-        /*
-        |--------------------------------------------------------------------------
-        | IMPORTANT
-        |--------------------------------------------------------------------------
-        | Store the relative path in the database.
-        |--------------------------------------------------------------------------
-        */
-
         $save_url = 'upload/property/thumbnail/' . $name_gen;
-
-        /*
-        |--------------------------------------------------------------------------
-        | Insert Property
-        |--------------------------------------------------------------------------
-        */
 
         $property_id = Property::insertGetId([
             'ptype_id' => $request->ptype_id,
@@ -209,7 +162,7 @@ class PropertyController extends Controller
 
             'neighbourhood' => $request->neighbourhood,
 
-            'longtitude' => $request->longtitude,
+            'longitude' => $request->longitude,
 
             'latitude' => $request->latitude,
 
@@ -266,12 +219,6 @@ class PropertyController extends Controller
 
         foreach ($facilityNames as $index => $facilityName) {
 
-            /*
-            |--------------------------------------------------------------------------
-            | Skip empty facility rows
-            |--------------------------------------------------------------------------
-            */
-
             if (empty($facilityName)) {
                 continue;
             }
@@ -300,14 +247,19 @@ class PropertyController extends Controller
     // End Method
 
     public function EditProperty(mixed $id) {
+        $facilities = Facility::where('property_id', '=', $id, 'and')->get();
         $property = Property::findOrFail($id);
 
-        // $type = $request->input('amenity_id', []);
         $type = $property->amenity_id;
 
         $property_amenities = explode(',', $type);
 
-        $multiImages = MultiImage::where('property_id', $id)->get();
+        $multiImages = MultiImage::where(
+            'property_id',
+            '=',
+            $id,
+            'and'
+        )->get();
 
         $propertyType = PropertyType::latest('created_at')->get();
 
@@ -319,7 +271,7 @@ class PropertyController extends Controller
             ->latest()
             ->get();
 
-        return view('backend.property.edit_property', compact('property', 'propertyType', 'amenities', 'activeAgent', 'property_amenities', 'multiImages'));
+        return view('backend.property.edit_property', compact('property', 'propertyType', 'amenities', 'activeAgent', 'property_amenities', 'multiImages', 'facilities'));
     }
     // End Method
 
@@ -349,7 +301,7 @@ class PropertyController extends Controller
             'state' => $request->state,
             'postal_code' => $request->postal_code,
             'neighbourhood' => $request->neighbourhood,
-            'longtitude' => $request->longtitude,
+            'longitude' => $request->longitude,
             'latitude' => $request->latitude,
             'featured' => $request->featured ?? 0,
             'hot' => $request->hot ?? 0,
@@ -388,13 +340,6 @@ class PropertyController extends Controller
             mkdir($multiImageDirectory, 0755, true);
         }
 
-
-        /*
-        |--------------------------------------------------------------------------
-        | Main Thumbnail Upload
-        |--------------------------------------------------------------------------
-        */
-
         $image = $request->file('main_thumbnail');
 
         $manager = new ImageManager(
@@ -410,13 +355,6 @@ class PropertyController extends Controller
             $thumbnailDirectory . '/' . $name_gen
         );
 
-        /*
-        |--------------------------------------------------------------------------
-        | IMPORTANT
-        |--------------------------------------------------------------------------
-        | Store the relative path in the database.
-        |--------------------------------------------------------------------------
-        */
 
         $save_url = 'upload/property/thumbnail/' . $name_gen;
 
@@ -465,28 +403,11 @@ class PropertyController extends Controller
             // Find existing multi-image record
             $imageDel = MultiImage::findOrFail($id);
 
-            /*
-            |--------------------------------------------------------------------------
-            | Delete old image
-            |--------------------------------------------------------------------------
-            | photo_name contains a relative path such as:
-            | upload/property/multi_images/123456.jpg
-            |
-            | Convert it to the full public path before deleting.
-            |--------------------------------------------------------------------------
-            */
-
             $oldImagePath = public_path($imageDel->photo_name);
 
             if (file_exists($oldImagePath)) {
                 unlink($oldImagePath);
             }
-
-            /*
-            |--------------------------------------------------------------------------
-            | Create new image name
-            |--------------------------------------------------------------------------
-            */
 
             $manager = new ImageManager(
                 new Driver()
@@ -495,23 +416,11 @@ class PropertyController extends Controller
             $make_name = hexdec(uniqid()) . '.' .
                 $image->getClientOriginalExtension();
 
-            /*
-            |--------------------------------------------------------------------------
-            | Read and resize image
-            |--------------------------------------------------------------------------
-            */
-
             $multiImage = $manager->read($image);
 
             $multiImage->resize(770, 520)->save(
                 $multiImageDirectory . '/' . $make_name
             );
-
-            /*
-            |--------------------------------------------------------------------------
-            | Store relative path in database
-            |--------------------------------------------------------------------------
-            */
 
             $uploadPath =
                 'upload/property/multi_images/' . $make_name;
@@ -548,5 +457,276 @@ class PropertyController extends Controller
 
         }
 
+    public function StoreNewMultiimage(Request $request) {
+        $validated = $request->validate([
+            'imageid' => [
+                'required',
+                'integer',
+                'exists:properties,id',
+            ],
+
+            'multi_images' => [
+                'required',
+                'file',
+                'image',
+                'mimes:jpg,jpeg,png,webp',
+                'max:2048',
+            ],
+        ]);
+
+        $image = $request->file('multi_images');
+
+        // Extra safety check
+        if (!$image || !$image->isValid()) {
+            return redirect()
+                ->back()
+                ->withErrors([
+                    'multi_images' => 'Please select a valid image file.',
+                ])
+                ->withInput();
+        }
+
+        $multiImageDirectory = public_path(
+            'upload/property/multi_images'
+        );
+
+        if (!is_dir($multiImageDirectory)) {
+            mkdir($multiImageDirectory, 0755, true);
+        }
+
+        $manager = new ImageManager(
+            new Driver()
+        );
+
+        $extension = $image->getClientOriginalExtension();
+
+        $make_name = uniqid('property_', true) . '.' . $extension;
+
+
+        $multiImage = $manager->read($image);
+
+        $multiImage
+            ->resize(770, 520)
+            ->save($multiImageDirectory . '/' . $make_name);
+
+        $uploadPath =
+            'upload/property/multi_images/' . $make_name;
+
+        MultiImage::create([
+            'property_id' => $validated['imageid'],
+            'photo_name' => $uploadPath,
+            'created_at' => Carbon::now(),
+        ]);
+
+
+        $notification = [
+            'message' => 'Property Multi-Image Added Successfully!',
+            'alert-type' => 'success',
+        ];
+
+
+        return redirect()->back()->with($notification);
+    }
+
+    public function UpdatePropertyFacility(Request $request) {
+        $validated = $request->validate([
+            'id' => [
+                 'required',
+                 'integer',
+                 'exists:properties,id',
+            ],
+
+            'facility_name' => [
+                'nullable',
+                'array',
+                ],
+
+            'facility_name.*' =>
+            [ 'nullable',
+            'string',
+            'in:Hospital,SuperMarket,School,Entertainment,Pharmacy,Airport,Railways,Bus Stop,Beach,Mall,Bank',
+            ],
+            'distance' => [
+                'nullable',
+                'array',
+            ],
+
+            'distance.*' => [
+                'nullable',
+                'string',
+                'max:100',
+            ],
+        ]);
+
+        DB::transaction(function () use ($validated) {
+            $propertyId = $validated['id'];
+            // Remove existing facilities for this property.
+            Facility::where('property_id', '=', $propertyId, 'and')->delete();
+            $facilityNames = $validated['facility_name'] ?? [];
+            $distances = $validated['distance'] ?? [];
+            foreach ($facilityNames as $index => $facilityName) {
+                // Ignore empty facility rows.
+                if (blank($facilityName)) {
+                    continue;
+                }
+
+                Facility::create([
+                    'property_id' => $propertyId,
+                    'facility_name' => $facilityName,
+                    'distance' => $distances[$index] ?? null,
+                    ]);
+            }
+        });
+
+        return redirect() ->back() ->with([ 'message' => 'Property Facility Updated Successfully!', 'alert-type' => 'success', ]);
+    }
+
+    public function DeleteProperty(mixed $id) {
+        $property = Property::findOrFail($id);
+
+        DB::transaction(function () use ($property) {
+
+            /*
+            |--------------------------------------------------------------------------
+            | 1. Delete main thumbnail from filesystem
+            |--------------------------------------------------------------------------
+            */
+            if (!empty($property->main_thumbnail)) {
+
+                $thumbnailPath = public_path(
+                    $property->main_thumbnail
+                );
+
+                if (is_file($thumbnailPath)) {
+                    unlink($thumbnailPath);
+                }
+            }
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | 2. Get all property multi-images
+            |--------------------------------------------------------------------------
+            */
+            $multiImages = MultiImage::where('property_id', '=', $property->id, 'and')->get();
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | 3. Delete multi-image files
+            |--------------------------------------------------------------------------
+            */
+            foreach ($multiImages as $multiImage) {
+
+                if (!empty($multiImage->photo_name)) {
+
+                    $imagePath = public_path(
+                        $multiImage->photo_name
+                    );
+
+                    if (is_file($imagePath)) {
+                        unlink($imagePath);
+                    }
+                }
+            }
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | 4. Delete multi-image database records
+            |--------------------------------------------------------------------------
+            */
+            MultiImage::where('property_id', '=', $property->id, 'and')->delete();
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | 5. Delete facility database records
+            |--------------------------------------------------------------------------
+            */
+            Facility::where('property_id', '=',$property->id, 'and')->delete();
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | 6. Finally delete the property
+            |--------------------------------------------------------------------------
+            */
+            $property->delete();
+        });
+
+
+        return redirect()->back()->with([
+            'message' => 'Property Deleted Successfully!',
+            'alert-type' => 'success',
+        ]);
+    }
+
+
+     public function DetailsProperty(mixed $id) {
+        $facilities = Facility::where('property_id', '=', $id, 'and')->get();
+        $property = Property::findOrFail($id);
+
+        $type = $property->amenity_id;
+
+        $property_amenities = explode(',', $type);
+
+        $multiImages = MultiImage::where(
+            'property_id',
+            '=',
+            $id,
+            'and'
+        )->get();
+
+        $propertyType = PropertyType::latest('created_at')->get();
+
+        $amenities = Amenities::latest('created_at')->get();
+
+        $activeAgent = User::query()
+            ->where('status', '1')
+            ->where('role', 'agent')
+            ->latest()
+            ->get();
+
+        return view('backend.property.details_property', compact('property', 'propertyType', 'amenities', 'activeAgent', 'property_amenities', 'multiImages', 'facilities'));
+    }
+    // End Method
+
+    public function InactiveProperty(Request $request) {
+        $pid = $request->id;
+        Property::findOrFail($pid)->update([
+            'status' => 0,
+        ]);
+
+        $notification = [
+            'message' => 'Property Inactive Successfully!',
+            'alert-type' => 'success',
+        ];
+
+
+        return redirect()->route('all.properties')->with($notification);
+    }
+    // End Method
+
+    public function ActiveProperty(Request $request) {
+        $pid = $request->id;
+        Property::findOrFail($pid)->update([
+            'status' => 1,
+        ]);
+
+        $notification = [
+            'message' => 'Property Active Successfully!',
+            'alert-type' => 'success',
+        ];
+
+
+        return redirect()->route('all.properties')->with($notification);
+    }
+    // End Method
+
+
 
 }
+
+
+

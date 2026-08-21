@@ -28,6 +28,7 @@ class AdminController extends Controller
 
         return redirect('/admin/login')->with($notification);
     }
+    // End Method
 
     public function AdminLogin() {
         return view('admin.admin_login');
@@ -73,6 +74,7 @@ class AdminController extends Controller
         $profileData = User::findOrFail($id);
         return view('admin.admin_change_password', compact('profileData'));
     }
+    // End Method
 
     public function AdminUpdatePassword(Request $request) {
         // Validation

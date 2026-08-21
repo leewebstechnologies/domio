@@ -35,7 +35,7 @@ return new class extends Migration
             $table->string('state')->nullable();
             $table->string('postal_code')->nullable();
             $table->string('neighbourhood')->nullable();
-            $table->string('longtitude')->nullable();
+            $table->string('longitude')->nullable();
             $table->string('latitude')->nullable();
             $table->string('featured')->nullable();
             $table->string('hot')->nullable();
