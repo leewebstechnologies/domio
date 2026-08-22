@@ -58,7 +58,7 @@ Route::middleware(['auth', 'role:agent'])->group(function() {
  Route::get('/agent/login', [AgentController::class, 'AgentLogin'])->name('agent.login')->middleware(RedirectIfAuthenticated::class);
  Route::post('/agent/register', [AgentController::class, 'AgentRegister'])->name('agent.register');
 
- 
+
 Route::get('/admin/login', [AdminController::class, 'AdminLogin'])->name('admin.login')->middleware(RedirectIfAuthenticated::class);
 
 
@@ -101,6 +101,11 @@ Route::get('/admin/login', [AdminController::class, 'AdminLogin'])->name('admin.
         Route::get('/details/property/{id}', 'DetailsProperty')->name('details.property');
         Route::post('/inactive/property', 'InactiveProperty')->name('inactive.property');
         Route::post('/active/property', 'ActiveProperty')->name('active.property');
+    });
+
+    // Agent All Routes from Admin
+    Route::controller(AdminController::class)->group(function() {
+        Route::get('/all/agents', 'AllAgents')->name('all.agents');
     });
 
 
